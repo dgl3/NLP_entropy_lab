@@ -91,7 +91,7 @@ def computeUnigramModel(U):
     entropy = entropy*-1
     return entropy
 
-def computeBigramModel(B):
+def computeBigramModel(U,B):
     entropy = 0
     for key in B.keys():
 	print key
@@ -114,7 +114,7 @@ esWords = getWordsFromFile("corpus/es.txt")
 unigramEntropy = computeUnigramModel(U)
 print unigramEntropy
 
-bigramEntropy = computeBigramModel(B)
+bigramEntropy = computeBigramModel(U, B)
 print bigramEntropy
 
 
