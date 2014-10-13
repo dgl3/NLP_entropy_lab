@@ -10,11 +10,13 @@ def computeUnigramModel(pathfile):
     enWords = getWordsFromFile(pathfile)
     (U,B,T) = countNgrams(enWords,0,0)
     entropy = 0
+    length = Decimal(len(enWords));
+    
     for key in U.keys():
-	U[key] = Decimal(U[key]/Decimal(len(U)))
-        entropy = entropy + (U[key]*Decimal(log(U[key])))
-    entropy = entropy*-1
-    return entropy
+	U[key] = Decimal(U[key]/length)
+        entropy += (U[key]*Decimal(log(U[key])))
+        
+    return -1*entropy
 
 def computeBigramModel(U,B):
     entropy = 0
