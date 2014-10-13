@@ -85,7 +85,7 @@ def countNgrams(l,inic,end=0):
     return (U,B,T)
 
 def computeUnigramModel(pahtfile):
-    enWords = getWordsFromFile("corpus/en.txt")
+    enWords = getWordsFromFile(pathfile)
     (U,B,T) = countNgrams(enWords,0,0)
     entropy = 0
     for key in U.keys():
