@@ -18,6 +18,7 @@ from nltk import *
 from decimal import Decimal
 from math import log
 
+
 def importingBrownCorpusFromNLTK(outF):
     "importing tagged brown corpus from NLTK and writing on a file OutF"
     outF = open(outF,'w')
@@ -83,7 +84,9 @@ def countNgrams(l,inic,end=0):
             T[(l[i-2],l[i-1],l[i])] +=1
     return (U,B,T)
 
-def computeUnigramModel(U):
+def computeUnigramModel(pahtfile):
+    enWords = getWordsFromFile("corpus/en.txt")
+    (U,B,T) = countNgrams(enWords,0,0)
     entropy = 0
     for key in U.keys():
 	U[key] = Decimal(U[key]/Decimal(len(U)))
@@ -105,17 +108,17 @@ def computeTrigramModel(T):
 ##importing tagged brown corpus from NLTK
 ##importingBrownCorpusFromNLTK("../corpus/taggedBrown.txt")
 
-taggedWords = getTaggedWordsFromFile("corpus/taggedBrown.txt")
-enWords = getWordsFromFile("corpus/en.txt")
-esWords = getWordsFromFile("corpus/es.txt")
+#taggedWords = getTaggedWordsFromFile("corpus/taggedBrown.txt")
+#enWords = getWordsFromFile("corpus/en.txt")
+#esWords = getWordsFromFile("corpus/es.txt")
 
-(U,B,T) = countNgrams(enWords,0,0)
+#(U,B,T) = countNgrams(enWords,0,0)
 
-unigramEntropy = computeUnigramModel(U)
+unigramEntropy = computeUnigramModel("corpus/en.txt")
 print unigramEntropy
 
-bigramEntropy = computeBigramModel(U, B)
-print bigramEntropy
+#bigramEntropy = computeBigramModel("corpus/en.txt")
+#print bigramEntropy
 
 
 
