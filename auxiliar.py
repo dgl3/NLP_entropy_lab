@@ -84,7 +84,7 @@ def countNgrams(l,inic,end=0):
             T[(l[i-2],l[i-1],l[i])] +=1
     return (U,B,T)
 
-def computeUnigramModel(pahtfile):
+def computeUnigramModel(pathfile):
     enWords = getWordsFromFile(pathfile)
     (U,B,T) = countNgrams(enWords,0,0)
     entropy = 0
