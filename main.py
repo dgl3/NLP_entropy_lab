@@ -18,12 +18,34 @@ def computeUnigramModel(pathfile):
         
     return -1*entropy
 
-def computeBigramModel(U,B):
-    entropy = 0
-    for key in B.keys():
-	print key
+def computeBigramModel(pathfile):
+    enWords = getWordsFromFile(pathfile)
+    (U,B,T) = countNgrams(enWords,0,200)
+    entropy = 0.0
+    length = float(len(enWords));
+    bilength = 0.0    
+
+    for val in B.values():
+	bilength += val
+
+    for key in U.keys():
+	pX = U[key]/length
+        
+	
+ 	sumatory = 0.0
+	for bkey in B.keys():
+		if bkey[0] == key:
+			print bkey[0], bkey[1]
+			# .. later remove this entry from dict
+			pYX = B[bkey]/bilength
+			pY = U[bkey[1]]/length
+			pXIY = pYX/pY
+			sumatory += pXIY * log(pXIY)
+
+	entropy += pX*sumatory
+	
     
-    return entropy
+    return -1*entropy
 
 def computeTrigramModel(T):
     print "Function to compute the trigram model"
@@ -38,11 +60,11 @@ def computeTrigramModel(T):
 
 #(U,B,T) = countNgrams(enWords,0,0)
 
-unigramEntropy = computeUnigramModel("corpus/en.txt")
-print unigramEntropy
+#unigramEntropy = computeUnigramModel("corpus/en.txt")
+#print unigramEntropy
 
-#bigramEntropy = computeBigramModel("corpus/en.txt")
-#print bigramEntropy
+bigramEntropy = computeBigramModel("corpus/en.txt")
+print bigramEntropy
 
 
 
