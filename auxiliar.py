@@ -15,9 +15,6 @@ import re
 from string import *
 import sys
 from nltk import *
-from decimal import Decimal
-from math import log
-
 
 def importingBrownCorpusFromNLTK(outF):
     "importing tagged brown corpus from NLTK and writing on a file OutF"
@@ -74,12 +71,20 @@ def countNgrams(l,inic,end=0):
             U[(l[i])]=1
         else:
             U[(l[i])]+=1
-        if (l[i-1],l[i]) not in U:
+        if (l[i-1],l[i]) not in B:
             B[(l[i-1],l[i])] = 1
         else:
             B[(l[i-1],l[i])] +=1
-        if (l[i-2],l[i-1],l[i]) not in U:
+        if (l[i-2],l[i-1],l[i]) not in T:
             T[(l[i-2],l[i-1],l[i])] = 1
         else:
             T[(l[i-2],l[i-1],l[i])] +=1
     return (U,B,T)
+      
+##importing tagged brown corpus from NLTK
+##importingBrownCorpusFromNLTK("../corpus/taggedBrown.txt")
+
+##taggedWords = getTaggedWordsFromFile("../corpus/taggedBrown.txt")
+##enWords = getWordsFromFile("../corpus/en.txt")
+##esWords = getWordsFromFile("../corpus/es.txt")
+##tags = getTagsFromTaggedWords(taggedWords)
