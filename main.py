@@ -8,11 +8,14 @@ from auxiliar import *
 from math import log
 
 
-def computeUnigramModel(pathfile):
-    enWords = getWordsFromFile(pathfile)
-    (U,B,T) = countNgrams(enWords,0,0)
-    entropy = 0
-    length = Decimal(len(enWords));
+def computeUnigramEntropy(ngrams):
+    (U,B,T) = ngrams
+    entropy = 0.0
+    
+    # Count total amount of words
+    length = 0.0
+    for count in U.values():
+        length += count
     
     for key in U.keys():
         U[key] = Decimal(U[key]/length)
@@ -20,10 +23,13 @@ def computeUnigramModel(pathfile):
         
     return -1*entropy
 
-def computeBigramModel(pathfile):
-    enWords = getWordsFromFile(pathfile)
-    (U,B,T) = countNgrams(enWords,0,0)
-    length = float(len(enWords))
+def computeBigramEntropy(ngrams):
+    (U,B,T) = ngrams
+    
+    # Count total amount of words
+    length = 0.0
+    for count in U.values():
+        length += count
     
     prob = {}  #[ p(x), p(y|x) ]
     for key in U.keys():
@@ -44,13 +50,16 @@ def computeBigramModel(pathfile):
     
     return -1*entropy
 
-def computeTrigramModel(pathfile):
+def computeTrigramEntropy(ngrams):
     X = 0;
     Y = 1;
     Z = 2;
-    enWords = getWordsFromFile(pathfile)
-    (U,B,T) = countNgrams(enWords,0,0)
-    length = float(len(enWords))
+    (U,B,T) = ngrams
+    
+    # Count total amount of words
+    length = 0.0
+    for count in U.values():
+        length += count
     
     ### Compute and sum p(z|xy)
     probsZ_XY = {}
@@ -84,30 +93,58 @@ def computeTrigramModel(pathfile):
 
     return -1*entropy
 
-      
-##importing tagged brown corpus from NLTK
-##importingBrownCorpusFromNLTK("../corpus/taggedBrown.txt")
+def countSmoothNgrams(tw, smoothX, smoothY, inic,end=0):
+    if end == 0:
+        end = len(tw)
+        
+    WORD = 0 
+    
+    U={}
+    B={}
+    T={}
+    
+    U[(tw[inic][smoothX])]=1
+    if ( tw[inic+1][smoothX] ) not in U:
+        U[( tw[inic+1][smoothX] )]=1
+    else:
+        U[( tw[inic+1][smoothX] )]+=1
+        
+    B[(tw[inic][smoothX],tw[inic+1][WORD])]=1
+    for i in range(inic+2,end):
+        # Unigram
+        if (tw[i][smoothX]) not in U:
+            U[(tw[i][smoothX])]=1
+        else:
+            U[(tw[i][smoothX])]+=1
+            
+        # Bigram
+        if (tw[i-1][smoothX],tw[i][smoothY]) not in B:
+            B[(tw[i-1][smoothX],tw[i][smoothY])] = 1
+        else:
+            B[(tw[i-1][smoothX],tw[i][smoothY])] +=1
+            
+        # Trigram
+        if (tw[i-2][smoothX],tw[i-1][smoothY],tw[i][WORD]) not in T:
+            T[(tw[i-2][smoothX],tw[i-1][smoothY],tw[i][WORD])] = 1
+        else:
+            T[(tw[i-2][smoothX],tw[i-1][smoothY],tw[i][WORD])] +=1
+    return (U,B,T)
 
-#taggedWords = getTaggedWordsFromFile("corpus/taggedBrown.txt")
-#enWords = getWordsFromFile("corpus/en.txt")
-#esWords = getWordsFromFile("corpus/es.txt")
 
-#(U,B,T) = countNgrams(enWords,0,0)
+taggedWords = getTaggedWordsFromFile("corpus/taggedBrown.txt")
+allWordsCount = len(taggedWords)
 
-#unigramEntropy = computeUnigramModel("corpus/en.txt")
-#print unigramEntropy
+# Full Corpus
+entropy = computeTrigramEntropy( countSmoothNgrams(taggedWords,1,0,0,0) )
+perplexity = pow(2, entropy)
+print perplexity
 
-bigramEntropy = computeBigramModel("corpus/en.txt")
-print bigramEntropy
+# Half Corpus
+entropy = computeTrigramEntropy( countSmoothNgrams(taggedWords,1,0,0,allWordsCount/2) )
+perplexity = pow(2, entropy)
+print perplexity
 
-print("--")
-
-trigramEntropy = computeTrigramModel("corpus/taggedBrown.en")
-print trigramEntropy
-
-
-
-
-
-
-
+# Quarter Corpus
+entropy = computeTrigramEntropy( countSmoothNgrams(taggedWords,1,0,0,allWordsCount/4) )
+perplexity = pow(2, entropy)
+print perplexity

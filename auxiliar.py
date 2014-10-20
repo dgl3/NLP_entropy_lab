@@ -60,11 +60,14 @@ def countNgrams(l,inic,end=0):
     U={}
     B={}
     T={}
+    
+    
     U[(l[inic])]=1
     if (l[inic+1]) not in U:
         U[(l[inic+1])]=1
     else:
         U[(l[inic+1])]+=1
+        
     B[(l[inic],l[inic+1])]=1
     for i in range(inic+2,end):
         if (l[i]) not in U:
